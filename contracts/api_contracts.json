@@ -1,0 +1,58 @@
+{
+  "_note": "v0.1 Initial Draft - features object will be finalized after reviewing Suricata eve.json sample on Thursday",
+  "constants": {
+    "labels": ["normal", "brute_force", "port_scan"],
+    "severities": ["low", "medium", "high", "critical"],
+    "alert_statuses": ["new", "acknowledged", "resolved"],
+    "actions_taken": ["none", "blocked", "user_suspended"]
+  },
+  "1_event_from_cyber_to_backend": {
+    "endpoint": "POST /api/events",
+    "payload": {
+      "event_id": "evt_0001",
+      "timestamp": "2026-12-01T14:32:10Z",
+      "source_ip": "45.33.12.9",
+      "target_ip": "192.168.56.20",
+      "protocol": "TCP",
+      "window_seconds": 10,
+      "features": {}
+    }
+  },
+  "2_predict_request_from_backend_to_ai": {
+    "endpoint": "POST /predict",
+    "payload": {
+      "event_id": "evt_0001",
+      "features": {}
+    }
+  },
+  "3_predict_response_from_ai_to_backend": {
+    "payload": {
+      "event_id": "evt_0001",
+      "label": "brute_force",
+      "severity": "high",
+      "confidence": 0.97,
+      "reason": "failed_logins is far above normal"
+    }
+  },
+  "4_firewall_command_from_backend": {
+    "payload": {
+      "action": "block_ip",
+      "ip": "45.33.12.9",
+      "duration": "permanent",
+      "reason": "brute_force / high"
+    }
+  },
+  "5_alert_from_backend_to_frontend": {
+    "endpoint": "GET /api/alerts & Socket.IO (new_alert)",
+    "payload": {
+      "alert_id": "alt_0001",
+      "time": "2026-12-01T14:32:11Z",
+      "source_ip": "45.33.12.9",
+      "attack_type": "brute_force",
+      "severity": "high",
+      "action_taken": "blocked",
+      "status": "new",
+      "explanation": "47 failed logins in 10 seconds"
+    }
+  }
+}
